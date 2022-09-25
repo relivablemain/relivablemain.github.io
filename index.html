@@ -1,0 +1,268 @@
+<html>
+  <head>
+        
+    <link rel="canonical" href="https://www.alpha.relivable.com"/>
+    
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+
+    <!-- Gallery Switching -->
+
+    <script src="public/js/vidfade.js"></script>
+    <script src="public/js/vid-control.js"></script>
+
+    <!-- FPS Movememnt with Controlers -->
+    <script src="https://gftruj.github.io/webzamples/aframe/controls/oculus-thumbstick-controls.js"></script>
+
+
+  <style>
+  
+    body {
+    animation: fadeInAnimation ease 6s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    }
+    
+    @keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+        }
+    }
+
+  .mainUI
+  {
+
+    border: 0px solid pink; 
+    position: fixed; 
+    top: 0px;  
+    width:100%; height:100%; 
+    z-index: 1; 
+    pointer-events: none; /* allow click-through in transparent areas */
+    display: flex;
+    align-items: center;
+      justify-content: center;
+  }
+
+
+  .regionUI
+  {
+    border: 0px solid yellow;
+    position: absolute; 
+    display: flex;
+    flex-direction: row;
+    pointer-events: none;
+  }
+
+  .buttonUI
+  {
+    border: 0px solid lime;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    pointer-events: auto;	
+    filter: drop-shadow(0px 0px 20px white);
+  }
+    
+
+  </style>
+
+  </head>
+
+  <body>
+    
+  <!-- START Button Fade In -->
+  <div class="mainUI" id="uiDiv" oncontextmenu="return false;">
+    <!-- centered -->
+    <div class="regionUI">
+      <div class="buttonUI">
+        <img src="https://cdn.glitch.global/9a5f2aca-4ded-4da0-8487-5075a95bd3de/RelivableSplash.JPG?v=1662953098434" id="buttonEnter" />
+      </div>
+    </div>
+  </div>
+    
+    
+    
+<!-- a-scene contains a 3D WebGL render pipeline for elements to be placed and viewedcntrl+cmd+i to open inspector -->
+   <a-scene id="aScene"  cursor="rayOrigin: mouse"  raycaster="objects: .interactable" vidfade>
+      
+      <!-- Aframe Asset Mannager ---------------------------------------------------------------------->
+      <a-assets>
+        
+      <img id="skyHome" src="" crossorigin="anonymous">
+      <img id="playButton" src="https://cdn.glitch.global/9a5f2aca-4ded-4da0-8487-5075a95bd3de/playbutton2blk.png?v=1663008931573" crossorigin="anonymous">
+      <img id="pauseButton" src="https://cdn.glitch.global/9a5f2aca-4ded-4da0-8487-5075a95bd3de/pausebutton3.png?v=1663008611071" crossorigin="anonymous">
+      <img id="homeButton" src="https://cdn.glitch.global/9a5f2aca-4ded-4da0-8487-5075a95bd3de/HomeButton.png?v=1662952477015" crossorigin="anonymous">
+      <img id="resetButton" src="https://cdn.glitch.global/3808906e-e47a-4829-b44f-540c296bcd42/restartIconNoBkg.png?v=1663284354518" crossorigin="anonymous">
+      <img id="floor"       src="https://cdn.glitch.com/c388f728-37b7-4af9-af03-1ee7430663e7%2F4727356277_66fb5f938f_o.jpg?1544178281422" crossorigin="anonymous">
+
+        
+      <video id="park" src="https://cdn.glitch.me/b26d1475-2177-4802-8fa5-a53a082f41dc/Park_30Fps.MOV?v=1661130712138" style="display:none" autoplay loop muted crossorigin="anonymous"></video>
+      <video id="aqua" src="https://cdn.glitch.me/b26d1475-2177-4802-8fa5-a53a082f41dc/aqua_Relivable_Alpha_Glitch.mp4?v=1660770507326" style="display:none" autoplay loop muted crossorigin="anonymous"></video>
+      <video id="bob1" src="https://cdn.glitch.me/3808906e-e47a-4829-b44f-540c296bcd42/Miller.MOV?v=1663148281521" style="display:none" autoplay loop muted crossorigin="anonymous"></video>
+      <video id="forest" src="https://cdn.glitch.me/b26d1475-2177-4802-8fa5-a53a082f41dc/forest_Relivable_Alpha_Glitch.mp4?v=1660770457333" style="display:none" autoplay loop muted crossorigin="anonymous"></video>"
+      <video id="beach" src="https://cdn.glitch.me/b26d1475-2177-4802-8fa5-a53a082f41dc/Pier_24Fps.MOV?v=1661130734552" style="display:none" autoplay loop muted crossorigin="anonymous"></video>"
+
+     </a-assets>
+      
+
+<!-- SKYBOX ----------------------------------------------------------------------------------->
+      <a-sky id="sky" src="skyHome"></a-sky>
+
+      
+<!-- FLOOR using src"source.com" along sith the repeat attribute (x,y) to smooth out material -->
+      <a-plane
+        class="homeworld"
+        id="roomFloor"
+        position="0 0 0"
+        rotation="-90 0 0"
+        width="30"
+        height="30"
+        repeat="5 4"
+      ></a-plane>
+
+
+  
+<!-- CAMERA ----------------------------------------------------------------------------------->
+
+
+      
+    <!-- Camera + controllers rig -->
+    <a-entity id="rig">
+      
+      <a-camera id="camera" look-controls wasd-controls position="0 1.6 0">
+        
+        <!-- VIDEO PLAYER MENU -->
+        
+    <a-entity id="videoPlayer" position="0 .5 0" rotation="0 0 0" visible="false">
+        <a-entity id="videoPlayerMenu" src="" material="color: white; opacity: 80" geometry="primitive: plane; width: 1.8; height: .5" position="0 -1 -2"></a-entity>
+          
+        <a-image class="vidPlayerButton" id="menuPlayButton" src="#playButton"
+             position="0 -1 -3"
+             height=".3"
+             width=".3"
+             visible="false"
+            >
+          </a-image>
+        
+          <a-image class="vidPlayerButton" id="menuPauseButton" src="#pauseButton"
+             position="0 -1 -2"
+             height=".3"
+             width=".3"
+             visible="true"
+            >
+          </a-image>
+            
+          <a-image class="vidPlayerButton" id="menuResetButton" src="#resetButton"
+             position="-.6 -1 -2"
+             height=".3"
+             width=".3"
+             visible="true"
+            >
+          </a-image>
+        
+          <a-image class="vidPlayerButton" id="menuHomeButton" src="#homeButton"
+             position=".6 -1 -2"
+             height=".3"
+             width=".3"
+             >
+          </a-image>
+      
+    </a-entity>
+
+        
+        <!-- Mouse circle coursor -->
+        <a-entity
+            id="mouseCursor"
+            visible= "false"
+            cursor="rayOrigin: mouse"
+            position="0 0 -1"
+            geometry="primitive: ring; radiusInner: 0.012; radiusOuter: 0.017"
+            material="color: black; shader: flat">
+        </a-entity>
+        
+      </a-camera>
+      
+        <a-entity
+            id="leftHand"
+            hand-controls="hand: left; handModelStyle: highPoly; color: #cfd1d0" 
+            sphere-collider="objects: a-box"
+            magicleap-controls=""   
+            vive-controls="" 
+            oculus-touch-controls="" 
+            windows-motion-controls="" 
+            hp-mixed-reality-controls=""
+            link-controls
+            super-hands
+            gamepad-controls
+            >
+        </a-entity>
+      
+        <a-entity 
+            id="rightHand"
+            sphere-collider="objects: a-sphere"
+            magicleap-controls=""   
+            vive-controls="" 
+            oculus-touch-controls="" 
+            windows-motion-controls="" 
+            hp-mixed-reality-controls=""
+            oculus-thumbstick-controls
+            link-controls
+            super-hands
+            laser-controls="hand: right">
+        </a-entity>
+           
+    </a-entity>
+      
+
+      
+
+
+<!-- INTERACTABLES --->
+
+      <!-- VIDEOSPHERES ------Attribute Ref - https://www.w3schools.com/tags/ref_av_dom.asp---------->
+     
+     
+      <a-entity class="homeworld sphere" id="shell0" position="-4 0 -4.5">
+          <a-box color="black" rotation="0 0 0" width="1" height="2" depth="1" ></a-box>
+          <a-sphere id="sphere0" class="sphere" position="0 1.8 0" radius=".4" src="#beach" vid-control="event: vidUpdate; video: beach"     
+          animation="property: rotation; to: 0 360 0; easing: easeInOutSine; dur: 30000; loop: true; elasticity: 0"
+          ></a-sphere>
+      </a-entity>
+
+     
+     <a-entity class="homeworld sphere" id="shell1" position="-2 0 -4.5">
+          <a-box color="black" rotation="0 0 0" width="1" height="2" depth="1" ></a-box>
+          <a-sphere id="sphere1" class="sphere" position="0 1.8 0" radius=".4" src="#park" vid-control="event: vidUpdate; video: park"     
+          animation="property: rotation; to: 0 360 0; easing: easeInOutSine; dur: 30000; loop: true; elasticity: 0"
+          ></a-sphere>
+      </a-entity>
+      
+      <a-entity class="homeworld sphere" id="shell2" position="0 0 -4.5">
+          <a-box color="black" rotation="0 0 0" width="1" height="2" depth="1" ></a-box>
+          <a-sphere id="sphere2" class="sphere" position="0 1.8 0" radius=".4" src="#bob1" vid-control="event: vidUpdate; video: bob1"       
+          animation="property: rotation; to: 0 360 0; easing: easeInOutSine; dur: 30000; loop: true; elasticity: 0">         
+          </a-sphere>
+       </a-entity>
+      
+      <a-entity class="homeworld sphere" id="shell3" position="2 0 -4.5">
+          <a-box color="black" rotation="0 0 0" width="1" height="2" depth="1" ></a-box>
+          <a-sphere id="sphere3" class="sphere" position="0 1.8 0" radius=".4" src="#aqua" vid-control="event: vidUpdate; video: aqua"        
+          animation="property: rotation; to: 0 360 0; easing: easeInOutSine; dur: 30000; loop: true; elasticity: 0">       
+          </a-sphere>
+       </a-entity>
+     
+      <a-entity class="homeworld sphere" id="shell4" position="4 0 -4.5">
+          <a-box color="black" rotation="0 0 0" width="1" height="2" depth="1" ></a-box>
+          <a-sphere id="sphere4" class="sphere" position="0 1.8 0" radius=".4" src="#forest" vid-control="event: vidUpdate; video: forest"        
+          animation="property: rotation; to: 0 360 0; easing: easeInOutSine; dur: 30000; loop: true; elasticity: 0">       
+          </a-sphere>
+       </a-entity>
+
+      
+  </a-scene>
+ </body>
+</html>
+
+
