@@ -11,7 +11,7 @@ AFRAME.registerComponent('vidcontrol', {
       var self = this;
       var el = this.el;
       var vid;
-      var src = el.getAttribute('data-thumb');
+      var src = el.getAttribute('src');
       var videoPlayer = document.getElementById("videoPlayer")
       var clickCount = 0;
               
