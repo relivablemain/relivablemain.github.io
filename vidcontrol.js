@@ -2,35 +2,41 @@ AFRAME.registerComponent('vidcontrol', {
   
     schema: {
       event: {type: 'string', default: ''},
-      video: {type: 'asset', default: ''}
+      video: {type: 'asset', default: ''},
+      videoSRC: {type: 'string', default: ''}
     },
   
     init: function () {
       
       
+      var sceneSel = document.querySelector('#aScene');
+
       var self = this;
       var el = this.el;
       var vid;
-      var src = el.getAttribute('src');
+      var src = this.data.videoSRC;
       var videoPlayer = document.getElementById("videoPlayer")
       var clickCount = 0;
               
       const sky = document.querySelector("#sky");
       var camera = document.querySelector("#camera");
       var rightHand = document.querySelector("#rightHand");
+      var exitVRButton = document.querySelector("#exitButton");
   
       let homeworldelements = document.querySelectorAll(".homeworld");
 
       var galleryMenu = document.querySelector("#links");
       
-            
+      /*
       console.log("self.data.video.src " + src);
       console.log("self.data.video " + self.data.video);
       console.log("self.data " + self.data);
       console.log("self" + self);
       console.log("el" + el);
-      vid = document.querySelector(src);
       console.log("vid "+ vid);
+      */
+     vid = document.querySelector(src);
+     console.log("videoSRC =" + this.data.videoSRC);
     
     
       
@@ -44,8 +50,12 @@ AFRAME.registerComponent('vidcontrol', {
         homeworldelements.forEach((homeworldelement) => {homeworldelement.setAttribute("visible", false)});
 
         //Blocks Gallery To Avoid Clicking
-        galleryMenu.setAttribute("position",{x: 0, y: 10, z: -3});
+        galleryMenu.setAttribute('position',{x: 0, y: 10, z: 0});
+        //galleryMenu.setAttribute('visible', false);
 
+        //Disable Visibility for ExitVR Button
+        if (sceneSel.is('vr-mode'))
+        exitVRButton.setAttribute('visible', false);
  
         videoPlayer.setAttribute('visible', true);
         sky.setAttribute('src', src);
@@ -53,8 +63,8 @@ AFRAME.registerComponent('vidcontrol', {
         vid.play();
         
         //Disable wasd-controls 
-        camera.removeAttribute('wasd-controls');
-        rightHand.removeAttribute('oculus-thumbstick-controls');
+        //camera.removeAttribute('wasd-controls');
+        //rightHand.removeAttribute('oculus-thumbstick-controls');
         
   
             let pause = () => {
@@ -155,7 +165,12 @@ AFRAME.registerComponent('vidcontrol', {
         homeworldelement.setAttribute("visible", true)})
 
         //Unblocks Gallery Back For Viewing
-        galleryMenu.setAttribute("position",{x: -3, y: 1.5, z: -4});
+        galleryMenu.setAttribute('position',{x: -2, y: 1.5, z: -2}); 
+        //galleryMenu.setAttribute('visible', true);
+
+        if (sceneSel.is('vr-mode'))
+        exitVRButton.setAttribute('visible', true);
+
 
         console.log(this.data);
           
@@ -164,8 +179,8 @@ AFRAME.registerComponent('vidcontrol', {
         resetButton.removeEventListener('click', reset)
           
         videoPlayer.setAttribute('visible', false);
-        camera.setAttribute('wasd-controls', '');
-        rightHand.setAttribute('oculus-thumbstick-controls', '');
+        //camera.setAttribute('wasd-controls', '');
+        //rightHand.setAttribute('oculus-thumbstick-controls', '');
 
         }
   
