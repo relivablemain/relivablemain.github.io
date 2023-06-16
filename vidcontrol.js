@@ -45,7 +45,7 @@ AFRAME.registerComponent('vidcontrol', {
       this.el.addEventListener('click', () => 
       {
         console.log("mainclick");
-  
+        window.location.href = `alpha.relivable.com/version-test/beta_vr_playvideo?video=${vid.id}`;
   
         homeworldelements.forEach((homeworldelement) => {homeworldelement.setAttribute("visible", false)});
 
